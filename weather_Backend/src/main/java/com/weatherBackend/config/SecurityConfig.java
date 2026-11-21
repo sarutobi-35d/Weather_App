@@ -36,7 +36,16 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated())
+
+                .logout(logout -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID")
+                        .logoutSuccessHandler((request, response,
+                                                authentication) -> response.setStatus(200)).permitAll()
+                        );
 
         return httpSecurity.build();
     }
