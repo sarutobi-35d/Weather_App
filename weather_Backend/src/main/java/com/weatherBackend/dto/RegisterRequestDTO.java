@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRequestDTO {
+public class RegisterRequestDTO {
 
     @NotBlank(message = "Nom obligatoire")
     @Min(value = 2, message = "Le nom de contenir 02 caractères minimums")
