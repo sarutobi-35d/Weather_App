@@ -4,6 +4,7 @@ import com.weatherBackend.dto.LoginRequestDTO;
 import com.weatherBackend.dto.RegisterRequestDTO;
 import com.weatherBackend.dto.UserResponseDTO;
 import com.weatherBackend.entity.User;
+import com.weatherBackend.exception.EmailAlreadyExistsException;
 import com.weatherBackend.repository.UserRepository;
 import com.weatherBackend.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
         String email = userRequestDTO.getEmail();
 
         if (userRepository.existsByEmail(email)){
-            throw new RuntimeException("Email déjà existant");
+            throw new EmailAlreadyExistsException(email);
         }
 
         User user = new User();
