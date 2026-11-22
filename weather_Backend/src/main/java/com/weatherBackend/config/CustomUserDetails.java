@@ -52,4 +52,9 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    //Permettra au Controller de recup l'Id du user connecté
+    public Long getUserId(){
+        return user.getId();
+    }
 }

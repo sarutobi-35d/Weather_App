@@ -1,6 +1,5 @@
 package com.weatherBackend.exception;
 
-import com.weatherBackend.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,13 +28,28 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException exception){
 
         Map<String, String> errors = new HashMap<>();
-
         exception.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage()));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
+    @ExceptionHandler(FavoriteAlreadyExistsException.class)
+    public ResponseEntity<String> handleFavoriteAlreadyExists(FavoriteAlreadyExistsException exception){
 
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(FavoriteLimitExceededException.class)
+    public ResponseEntity<String> handleFavoriteLimitExceeded(FavoriteLimitExceededException exception){
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFound(UserNotFoundException exception){
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+    }
 
 }
