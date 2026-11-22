@@ -6,6 +6,7 @@ import com.weatherBackend.entity.FavoriteCity;
 import com.weatherBackend.entity.User;
 import com.weatherBackend.exception.FavoriteAlreadyExistsException;
 import com.weatherBackend.exception.FavoriteLimitExceededException;
+import com.weatherBackend.exception.FavoriteNotFoundException;
 import com.weatherBackend.exception.UserNotFoundException;
 import com.weatherBackend.repository.FavoriteCityRepository;
 import com.weatherBackend.repository.UserRepository;
@@ -74,6 +75,16 @@ public class FavoriteServiceImpl implements FavoriteService {
                         favorite.getCityName(),
                         favorite.getCountry()
                 )).toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteFavorite(Long favoriteId, Long userId) {
+
+        FavoriteCity favoriteCity = favoriteCityRepository.findByIdAndUser_Id(favoriteId, userId)
+                .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
+
+        favoriteCityRepository.delete(favoriteCity);
     }
 
 
