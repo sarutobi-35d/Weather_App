@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FavoriteServiceImpl implements FavoriteService {
@@ -59,4 +61,20 @@ public class FavoriteServiceImpl implements FavoriteService {
                 savedFavorite.getCountry()
         );
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FavoriteCityResponseDTO> getFavorites(Long userId) {
+
+        return favoriteCityRepository.findAllByUser_Id(userId)
+                .stream()
+                .map(favorite -> new FavoriteCityResponseDTO(
+                        favorite.getId(),
+                        favorite.getCityId(),
+                        favorite.getCityName(),
+                        favorite.getCountry()
+                )).toList();
+    }
+
+
 }
