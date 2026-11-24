@@ -42,6 +42,25 @@ public class FavoriteController {
         return ResponseEntity.ok(responseDTOS);
     }
 
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<FavoriteCityResponseDTO> deleteFavorite(@PathVariable Long favoriteId,
+                                                                  @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        favoriteService.deleteFavorite(favoriteId, userDetails.getUserId());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{favoriteId}")
+    public ResponseEntity<FavoriteCityResponseDTO> updatedFavoriteCity(@PathVariable Long favoriteId,
+                                                                       @Valid @RequestBody FavoriteCityRequestDTO requestDTO,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails){
+
+        FavoriteCityResponseDTO responseDTO = favoriteService.updateFavorite(favoriteId, userDetails.getUserId(), requestDTO);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+
 //    @GetMapping("/test")
 //    public ResponseEntity<String> test(){
 //        return ResponseEntity.ok("Succès du user");

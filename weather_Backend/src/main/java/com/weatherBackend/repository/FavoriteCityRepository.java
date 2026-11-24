@@ -17,4 +17,5 @@ public interface FavoriteCityRepository extends JpaRepository<FavoriteCity, Long
 
     Optional<FavoriteCity> findByIdAndUser_Id(Long favoriteId, Long userId);
 
+    boolean existsByUser_IdAndCityIdAndIdNot(Long userId, Long cityId, Long favoriteId);
 }

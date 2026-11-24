@@ -13,4 +13,6 @@ public interface FavoriteService {
     List<FavoriteCityResponseDTO> getFavorites(Long userId);
 
     void deleteFavorite(Long favoriteId, Long userId);
+
+    FavoriteCityResponseDTO updateFavorite(Long favoriteId, Long userId, FavoriteCityRequestDTO requestDTO);
 }

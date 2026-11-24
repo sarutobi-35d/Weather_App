@@ -87,5 +87,37 @@ public class FavoriteServiceImpl implements FavoriteService {
         favoriteCityRepository.delete(favoriteCity);
     }
 
+    @Override
+    public FavoriteCityResponseDTO updateFavorite(Long favoriteId, Long userId, FavoriteCityRequestDTO requestDTO) {
+
+        //Verif que le favori existe et appartient à un user
+        FavoriteCity favoriteCity = favoriteCityRepository.findByIdAndUser_Id(favoriteId, userId)
+                .orElseThrow(() -> new FavoriteNotFoundException(favoriteId));
+
+        //Verif que la new ville n'est pas déjà dans les favoris du user
+        boolean alreadyExists = favoriteCityRepository.existsByUser_IdAndCityIdAndIdNot(userId, requestDTO.getCityId(),
+                favoriteId);
+
+        if (alreadyExists){
+            throw new FavoriteAlreadyExistsException(requestDTO.getCityName());
+        }
+
+        //Mise à jour
+        favoriteCity.setCityId(requestDTO.getCityId());
+        favoriteCity.setCityName(requestDTO.getCityName());
+        favoriteCity.setCountry(requestDTO.getCountry());
+
+        //Save and return DTO
+        FavoriteCity updatedFavorite = favoriteCityRepository.save(favoriteCity);
+
+        return new FavoriteCityResponseDTO(
+                updatedFavorite.getId(),
+                updatedFavorite.getCityId(),
+                updatedFavorite.getCityName(),
+                updatedFavorite.getCountry()
+        );
+
+    }
+
 
 }
