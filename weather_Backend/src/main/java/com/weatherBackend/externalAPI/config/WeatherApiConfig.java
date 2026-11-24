@@ -1,4 +1,4 @@
-package com.weatherBackend.externalApi.config;
+package com.weatherBackend.externalAPI.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
