@@ -1,4 +1,4 @@
-package com.weatherBackend.externalAPI.DTOs;
+package com.weatherBackend.EXTERNAL_API.DTOs;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

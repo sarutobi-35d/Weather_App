@@ -1,7 +1,7 @@
 package com.weatherBackend;
 
-import com.weatherBackend.externalAPI.DTOs.WeatherApiCityDTO;
-import com.weatherBackend.externalAPI.client.WeatherApiClient;
+import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiCityDTO;
+import com.weatherBackend.EXTERNAL_API.client.WeatherApiClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

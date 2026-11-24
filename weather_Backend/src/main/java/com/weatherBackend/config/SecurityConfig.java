@@ -36,6 +36,7 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/weather/**").permitAll()
                         .anyRequest().authenticated())
 
                 .logout(logout -> logout
