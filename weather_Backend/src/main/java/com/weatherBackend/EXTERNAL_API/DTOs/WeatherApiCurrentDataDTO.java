@@ -24,6 +24,7 @@ public class WeatherApiCurrentDataDTO {
     @JsonProperty("wind_dir")
     private String windDir;
 
+    @JsonProperty("condition")
     private WeatherApiConditionDTO conditionDTO; // Car l'objet condition est imbriqué dans l'objet current dans le JSON.
 
 }

@@ -1,5 +1,6 @@
 package com.weatherBackend.EXTERNAL_API.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,9 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WeatherApiCurrentDTO {
 
+    @JsonProperty("location")
     private WeatherApiLocationDTO locationDTO;
 
+    @JsonProperty("current")
     private WeatherApiCurrentDataDTO currentDataDTO;
 }
 
-//CA, C'EST LE DTO PRINCIPAL QUI CONTIENT LA LISTE DES OBJETS DE LA REPONSE JSON
+//CA, C'EST LE DTO PRINCIPAL QUI CONTIENT LES OBJETS DE LA REPONSE JSON

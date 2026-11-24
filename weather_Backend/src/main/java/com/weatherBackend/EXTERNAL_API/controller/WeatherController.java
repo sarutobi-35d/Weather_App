@@ -1,6 +1,7 @@
 package com.weatherBackend.EXTERNAL_API.controller;
 
 import com.weatherBackend.EXTERNAL_API.DTOs.CityResponseDTO;
+import com.weatherBackend.EXTERNAL_API.DTOs.CurrentWeatherResponseDTO;
 import com.weatherBackend.EXTERNAL_API.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,5 +25,13 @@ public class WeatherController {
         List<CityResponseDTO> cityResponseDTOS = weatherService.searchCities(query);
 
         return ResponseEntity.ok(cityResponseDTOS);
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<CurrentWeatherResponseDTO> showCity(@RequestParam Long cityId){
+
+        CurrentWeatherResponseDTO responseDTO = weatherService.getCurrentWeather(cityId);
+
+        return ResponseEntity.ok(responseDTO);
     }
 }
