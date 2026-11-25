@@ -1,9 +1,8 @@
 package com.weatherBackend.WeatherServiceImp;
 
-import com.weatherBackend.EXTERNAL_API.DTOs.ForecastResponseDTO;
-import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiConditionDTO;
-import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiForecastDTO;
+import com.weatherBackend.EXTERNAL_API.DTOs.*;
 import com.weatherBackend.EXTERNAL_API.client.WeatherApiClient;
+import com.weatherBackend.EXTERNAL_API.exception.WeatherServiceException;
 import com.weatherBackend.EXTERNAL_API.service.implementation.WeatherServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -94,11 +93,97 @@ public class WeatherServiceImplTest {
          when(weatherApiClient.getForecast(2801268L, 3))
                  .thenThrow(new RuntimeException("WeatherAPI indisponible"));
 
-         assertThrows(RuntimeException.class, () ->
+         WeatherServiceException exception = assertThrows(WeatherServiceException.class, () ->
                  weatherService.getForecast(2801268L, 3));
+
+         assertEquals("Unable to retrieve weather forecast", exception.getMessage());
+         assertNotNull(exception.getCause());
 
          verify(weatherApiClient).getForecast(2801268L, 3);
      }
+
+
+
+     @Test
+    void shouldGetCurrentWeatherSuccessfully(){
+
+         //DONNÉES FICTIVES DE LOCALISATION
+         WeatherApiLocationDTO location = new WeatherApiLocationDTO();
+         location.setName("Paris");
+         location.setCountry("France");
+
+         //DONNÉES MÉTÉO ACTUELLES
+         WeatherApiCurrentDataDTO current = new WeatherApiCurrentDataDTO();
+         current.setTempC(18.5);
+         current.setFeelslikeC(17.2);
+         current.setHumidity(65);
+         current.setWindKph(12.0);
+         current.setWindDir("NW");
+
+         //CREATION DE LA CONDITION MÉTÉO
+         WeatherApiConditionDTO condition = new WeatherApiConditionDTO();
+         condition.setText("Partly cloudy");
+         condition.setIcon("//cdn.weatherapi.com/weather/64x64/day/116.png");
+
+         current.setConditionDTO(condition);
+
+         //ASSEMBLAGE DE LA REPONSE WeatherAPI
+         WeatherApiCurrentDTO weatherData = new WeatherApiCurrentDTO();
+
+         weatherData.setLocationDTO(location);
+         weatherData.setCurrentDataDTO(current);
+
+         //CONFIG DU COMPORTEMENT DE MOCKITO
+         when(weatherApiClient.getCurrentWeather(2801268L))
+                 .thenReturn(weatherData);
+
+         //EXCUTION DE LA MÉTHODE À TESTER
+         CurrentWeatherResponseDTO response = weatherService.getCurrentWeather(2801268L);
+
+         //VÉRIFICATION DES RESULTATS
+         assertNotNull(response);
+         assertEquals("Paris", response.getCityName());
+         assertEquals("France", response.getCountry());
+         assertEquals(18.5, response.getTemperatureC());
+         assertEquals(17.2, response.getFeelslikeC());
+         assertEquals(65, response.getHumidity());
+         assertEquals(12.0, response.getWindKph());
+         assertEquals("NW", response.getWindDirection());
+         assertEquals("Partly cloudy", response.getConditionText());
+         assertEquals(
+                 "//cdn.weatherapi.com/weather/64x64/day/116.png",
+                 response.getConditionIcon()
+         );
+
+         // VÉRIFICATION DE L'APPEL DU CLIENT
+         verify(weatherApiClient).getCurrentWeather(2801268L);
+     }
+
+    @Test
+    void shouldThrowWeatherServiceExceptionWhenCurrentWeatherApiFails() {
+
+        // SIMULER ERREUR DU CLIENT WeatherAPI
+        when(weatherApiClient.getCurrentWeather(2801268L))
+                .thenThrow(new RuntimeException("WeatherAPI indisponible"));
+
+        // VÉRIFIER QUE LE SERVICE LÈVE WeatherServiceException
+        WeatherServiceException exception = assertThrows(
+                WeatherServiceException.class,
+                () -> weatherService.getCurrentWeather(2801268L)
+        );
+
+        // VÉRIFIER LE MESSAGE DE L'EXCEPTION
+        assertEquals(
+                "Unable to retrieve current weather",
+                exception.getMessage()
+        );
+
+        // VÉRIFIER QUE LA CAUSE ORIGINALE EST CONSERVÉE
+        assertNotNull(exception.getCause());
+
+        // VÉRIFIER QUE LE CLIENT A ÉTÉ BIEN APPELÉ
+        verify(weatherApiClient).getCurrentWeather(2801268L);
+    }
 
 
 }

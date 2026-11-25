@@ -2,6 +2,7 @@ package com.weatherBackend.EXTERNAL_API.service.implementation;
 
 import com.weatherBackend.EXTERNAL_API.DTOs.*;
 import com.weatherBackend.EXTERNAL_API.client.WeatherApiClient;
+import com.weatherBackend.EXTERNAL_API.exception.WeatherServiceException;
 import com.weatherBackend.EXTERNAL_API.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,13 @@ public class WeatherServiceImpl implements WeatherService {
     public CurrentWeatherResponseDTO getCurrentWeather(Long cityId) {
 
         //Recup les données météos auprès du fournisseur
-        WeatherApiCurrentDTO weatherData = weatherApiClient.getCurrentWeather(cityId);
+        WeatherApiCurrentDTO weatherData;
+
+        try {
+            weatherData = weatherApiClient.getCurrentWeather(cityId);
+        } catch (Exception e) {
+            throw new WeatherServiceException("Unable to retrieve current weather", e);
+        }
 
         //Build notre DTO en recup les infos dans les objets imbriqués.
         CurrentWeatherResponseDTO responseDTO = new CurrentWeatherResponseDTO();
@@ -61,7 +68,13 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public List<ForecastResponseDTO> getForecast(Long cityId, int days) {
 
-        WeatherApiForecastDTO forecastDTO = weatherApiClient.getForecast(cityId, days);
+        WeatherApiForecastDTO forecastDTO;
+
+        try {
+            forecastDTO = weatherApiClient.getForecast(cityId, days);
+        } catch (Exception e) {
+            throw new WeatherServiceException("Unable to retrieve weather forecast", e);
+        }
 
         return forecastDTO.getForecast().getForecastday()
                 .stream()
