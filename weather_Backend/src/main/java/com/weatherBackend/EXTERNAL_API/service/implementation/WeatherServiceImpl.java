@@ -2,6 +2,7 @@ package com.weatherBackend.EXTERNAL_API.service.implementation;
 
 import com.weatherBackend.EXTERNAL_API.DTOs.*;
 import com.weatherBackend.EXTERNAL_API.client.WeatherApiClient;
+import com.weatherBackend.EXTERNAL_API.exception.WeatherApiClientException;
 import com.weatherBackend.EXTERNAL_API.exception.WeatherServiceException;
 import com.weatherBackend.EXTERNAL_API.service.WeatherService;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         try {
             weatherData = weatherApiClient.getCurrentWeather(cityId);
-        } catch (Exception e) {
+        } catch (WeatherApiClientException e) {
             throw new WeatherServiceException("Unable to retrieve current weather", e);
         }
 
@@ -72,7 +73,7 @@ public class WeatherServiceImpl implements WeatherService {
 
         try {
             forecastDTO = weatherApiClient.getForecast(cityId, days);
-        } catch (Exception e) {
+        } catch (WeatherApiClientException e) {
             throw new WeatherServiceException("Unable to retrieve weather forecast", e);
         }
 
@@ -95,6 +96,5 @@ public class WeatherServiceImpl implements WeatherService {
                     return responseDTO;
                 })
                 .toList();
-
     }
 }

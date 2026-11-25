@@ -2,6 +2,7 @@ package com.weatherBackend.WeatherServiceImp;
 
 import com.weatherBackend.EXTERNAL_API.DTOs.*;
 import com.weatherBackend.EXTERNAL_API.client.WeatherApiClient;
+import com.weatherBackend.EXTERNAL_API.exception.WeatherApiClientException;
 import com.weatherBackend.EXTERNAL_API.exception.WeatherServiceException;
 import com.weatherBackend.EXTERNAL_API.service.implementation.WeatherServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -91,7 +92,8 @@ public class WeatherServiceImplTest {
     void shouldPropagateExceptionWhenWeatherApiFails(){
 
          when(weatherApiClient.getForecast(2801268L, 3))
-                 .thenThrow(new RuntimeException("WeatherAPI indisponible"));
+                 .thenThrow(new WeatherApiClientException("Impossible de récupérer les prévisions " +
+                         " météorologiques auprès de WeatherAPI ", new RuntimeException("Erreur de connexion")));
 
          WeatherServiceException exception = assertThrows(WeatherServiceException.class, () ->
                  weatherService.getForecast(2801268L, 3));
@@ -164,7 +166,8 @@ public class WeatherServiceImplTest {
 
         // SIMULER ERREUR DU CLIENT WeatherAPI
         when(weatherApiClient.getCurrentWeather(2801268L))
-                .thenThrow(new RuntimeException("WeatherAPI indisponible"));
+                .thenThrow(new WeatherApiClientException("Impossible de récupérer les conditions " +
+                        " météorologiques auprès de WeatherAPI", new RuntimeException("WeatherAPI indisponible") ));
 
         // VÉRIFIER QUE LE SERVICE LÈVE WeatherServiceException
         WeatherServiceException exception = assertThrows(
