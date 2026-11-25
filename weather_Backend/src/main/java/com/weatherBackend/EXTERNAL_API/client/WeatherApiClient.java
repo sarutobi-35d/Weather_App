@@ -2,6 +2,7 @@ package com.weatherBackend.EXTERNAL_API.client;
 
 import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiCityDTO;
 import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiCurrentDTO;
+import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiForecastDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -44,5 +45,20 @@ public class WeatherApiClient {
                 .retrieve() //Déclenche la recup de la réponse HTTP
                 .body(WeatherApiCurrentDTO.class); // Ask à Spring de convertir le JSON recu en objet JAVA
     }
+
+    //METHODE POUR LA PREVISION
+    public WeatherApiForecastDTO getForecast(Long cityId, int days){
+
+        return weatherRestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/forecast.json")
+                        .queryParam("key", apiKey)
+                        .queryParam("q", "id:" + cityId)
+                        .queryParam("days", days)
+                        .build())
+                .retrieve()
+                .body(WeatherApiForecastDTO.class);
+    }
+
 
 }

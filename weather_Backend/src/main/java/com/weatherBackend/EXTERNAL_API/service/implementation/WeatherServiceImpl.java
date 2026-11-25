@@ -1,8 +1,6 @@
 package com.weatherBackend.EXTERNAL_API.service.implementation;
 
-import com.weatherBackend.EXTERNAL_API.DTOs.CityResponseDTO;
-import com.weatherBackend.EXTERNAL_API.DTOs.CurrentWeatherResponseDTO;
-import com.weatherBackend.EXTERNAL_API.DTOs.WeatherApiCurrentDTO;
+import com.weatherBackend.EXTERNAL_API.DTOs.*;
 import com.weatherBackend.EXTERNAL_API.client.WeatherApiClient;
 import com.weatherBackend.EXTERNAL_API.service.WeatherService;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +55,33 @@ public class WeatherServiceImpl implements WeatherService {
         responseDTO.setConditionIcon(weatherData.getCurrentDataDTO().getConditionDTO().getIcon());
 
         return responseDTO;
+
+    }
+
+    @Override
+    public List<ForecastResponseDTO> getForecast(Long cityId, int days) {
+
+        WeatherApiForecastDTO forecastDTO = weatherApiClient.getForecast(cityId, days);
+
+        return forecastDTO.getForecast().getForecastday()
+                .stream()
+                .map(forecastDay -> {
+
+                    ForecastResponseDTO responseDTO = new ForecastResponseDTO();
+
+                    responseDTO.setDate(forecastDay.getDate());
+                    responseDTO.setMaxTempC(forecastDay.getDay().getMaxTempC());
+                    responseDTO.setMinTempC(forecastDay.getDay().getMinTempC());
+                    responseDTO.setAvgTempC(forecastDay.getDay().getAvgTempC());
+                    responseDTO.setMaxWindKph(forecastDay.getDay().getMaxWindKph());
+                    responseDTO.setAvgHumidity(forecastDay.getDay().getAvgHumidity());
+                    responseDTO.setDailyChangeOfRain(forecastDay.getDay().getDailyChanceOfRain());
+                    responseDTO.setConditionText(forecastDay.getDay().getCondition().getText());
+                    responseDTO.setConditionIcon(forecastDay.getDay().getCondition().getIcon());
+
+                    return responseDTO;
+                })
+                .toList();
 
     }
 }
